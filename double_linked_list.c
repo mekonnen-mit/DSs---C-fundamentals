@@ -32,8 +32,24 @@ void add_at_begin(int id,char title[15]){
     start=newnode;
 }
 
+void add_at_end(int id,char title[15]){
+    struct node* newnode;
+    struct node* temp=start;
+    newnode =(struct node* )malloc(sizeof(struct node));
+    newnode->id=id;
+    strcpy(newnode->title, title);
+    newnode->previous=NULL;
+    newnode->next=NULL;
+    while(temp->next!=NULL){
+        temp=temp->next;
+    }
+    newnode->previous=temp;
+    temp->next=newnode;
+}
+
 void insert(int id,int pos,char title[15]){
     struct node* newnode;
+    struct node* p;
     struct node* temp=start;
     newnode =(struct node* )malloc(sizeof(struct node));
     newnode->id=id;
@@ -49,23 +65,16 @@ void insert(int id,int pos,char title[15]){
                 temp=temp->next;
                 i++;
         }
-        newnode->previous=temp;
-        newnode->next=temp->next;
-        temp->next=newnode;
+        if(temp->next==NULL){
+            add_at_end(id,title);
+        }else{
+            p=temp->next;
+            p->previous=newnode;
+            newnode->previous=temp;
+            newnode->next=temp->next;
+            temp->next=newnode;
+        }
     }
-}
-
-void add_at_end(int id,char title[15]){
-    struct node* newnode;
-    struct node* temp=start;
-    newnode =(struct node* )malloc(sizeof(struct node));
-    newnode->id=id;
-    strcpy(newnode->title, title);
-    while(temp->next!=NULL){
-        temp=temp->next;
-    }
-    newnode->previous=temp;
-    temp->next=newnode;
 }
 
 void remove_music(char title[15]){
@@ -156,7 +165,7 @@ int main(){
              case 5:
                 printf("please enter name of the music to remove!\n");
                 scanf("%s",music_name);
-                remove(music_name);
+                remove_music(music_name);
                 break;
             case 6:
                 printf("please enter name of the music to search!\n");
